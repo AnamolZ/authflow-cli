@@ -38,7 +38,7 @@ soupsieve==2.6
 starlette==0.38.2
 typing_extensions==4.12.2
 tzdata==2024.1
-urllib3==2.2.2
+urllib3==2.5.0
 uvicorn==0.30.6
 webencodings==0.5.1
 yfinance==0.2.43
