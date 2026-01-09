@@ -1,3 +1,53 @@
-__pycache__/
+# Professional Python .gitignore
+
+# Dependencies & Virtual Environments
 venv/
+.venv/
+env/
+ENV/
+bin/
+
+# Python Build & Distribution
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Environment Variables & Secrets
+.env
+.env.*
+! .env.example
+data/Credentials.json
+data/*.csv
+
+# Project Specific
+logs/
+data/*.json
+
+# IDEs & Editors
 .vscode/
+.idea/
+*.swp
+*.swo
+
+# OS Specific
+.DS_Store
+Thumbs.db

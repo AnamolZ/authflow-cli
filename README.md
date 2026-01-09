@@ -1,57 +1,68 @@
-# JWT-Enhanced API Protection
+# OAuth Finance: Production-Grade API and CLI
 
-Illustrating the meticulous implementation of OAuth security measures within the configuration of an API endpoint, thereby exemplifying a comprehensive and robust framework designed to safeguard sensitive information and ensure secure access to the designated resources.
-
----
-
-### Starting the FastAPI Server
-
-To start the FastAPI server, execute the following command:
-
-```bash
-python -m uvicorn Authenticator:app --reload
-```
-
-- `python -m uvicorn`: Runs the Uvicorn ASGI server.
-- `Authenticator:app`: Specifies the module (`Authenticator`) and the FastAPI application instance (`app`) to serve.
-- `--reload`: Enables auto-reloading for development purposes, so changes are applied without restarting the server manually.
-
-### Retrieving API Responses
-
-To interact with the API and retrieve responses, execute:
-
-```bash
-python Finance_API.py
-```
-
-`Finance_API.py` script, which typically contains the logic for making requests to the API and processing the responses.
+This project serves as a comprehensive example of a production-ready Python application. It integrates professional authentication standards with real-time data processing, managed through a modern dependency environment.
 
 ---
 
-## POST
-  ##### Token Generation
+### Understanding the Architecture
 
+The project has been reorganized from a collection of scripts into a formal Python package structure. This separation of concerns ensures that each part of the system can be developed, tested, and scaled independently.
+
+#### Core Package (src/oauth_finance)
+- **Configuration Layer**: Centrally managed via `core/config.py`. It utilizes Pydantic Settings to handle environment variables and system constants. This approach prevents hardcoding sensitive information and allows the application to adapt to different environments (development, staging, production) without code changes.
+- **Authentication Service**: Located in `auth/service.py`, this module implements the OAuth2 Password Flow using JSON Web Tokens (JWT). It handles user validation, secure password comparison using bcrypt hashing, and the issuance of signed tokens.
+- **Financial Services**: The `services/stock_service.py` module contains the business logic. It performs multi-threaded scraping of financial data. By using a thread pool, the system can fetch data for multiple stock symbols simultaneously, significantly reducing the total response time.
+- **Interface Layer**: The project provides two main entry points:
+  - A **FastAPI** web server (`main.py`) for programmatic access via HTTP.
+  - A **CLI Tool** (`cli/finance_cli.py`) for direct terminal interaction.
+
+---
+
+### How the System Works
+
+#### 1. The Authentication Lifecycle
+The security model is built around standard Bearer Token authentication:
+- **Request**: A user provides their credentials (username and password) to the `/token` endpoint. 
+- **Verification**: The system hashes the incoming password and compares it against the secure hash stored in the data directory.
+- **Issuance**: If valid, the system generates a JWT signed with a secret key and a set expiration time.
+- **Authorization**: For subsequent requests, the client must include this token in the header. The system decodes and validates the signature of the token before allowing access to internal services.
+
+#### 2. Real-Time Data Processing
+When a request for stock data is made:
+- The system initializes a `StockInfoFetcher`.
+- It spawns a pool of worker threads. Each thread is responsible for navigating to a specific financial source, retrieving the raw HTML, and parsing out the market price.
+- It includes logic to handle localization (such as removing commas from currency strings) to ensure the data is numerically accurate and ready for analysis.
+
+---
+
+### Operational Guide
+
+#### Environment Setup
+The project utilizes `uv` for environment management. This ensures that every developer or server running the code uses the exact same dependency versions, eliminating the "it works on my machine" problem.
+
+1. **Install Dependencies**:
+   ```bash
+   uv sync
+   ```
+
+#### Application Execution
+**The API Server**
+The server provides a RESTful interface and interactive documentation.
 ```bash
-http://localhost:port/token
+uv run uvicorn oauth_finance.main:app --reload
 ```
+Once running, you can visit `http://127.0.0.1:8000/docs` to see the full API specification.
 
-##### Body
-  ##### x-www-form-urlencoded
-    username    anamol
-    password    mysecretpassword
+**The CLI Tool**
+This tool demonstrates how to consume the internal services directly.
+```bash
+uv run python -m oauth_finance.cli.finance_cli
+```
+You will be prompted for an access token. You can generate one via Postman or the Swagger documentation mentioned above.
 
-Illustrates the systematic utilization of the POST method to generate a JWT (JSON Web Token), elucidating its pivotal role in facilitating secure authentication processes when interfacing with an API endpoint.
+---
 
-#### Additional Resources
-For more information on how the OAuth API works and the underlying REST principles, please refer to the following resources:
-
-- [OAuth2 with Password and Bearer](https://fastapi.tiangolo.com/tutorial/security/simple-oauth2/)
-- [OAuth2 with Password (and hashing), Bearer with JWT tokens](https://fastapi.tiangolo.com/tutorial/security/oauth2-jwt/)
-
-## Contributions
-
-Feel free to fork the repository, engage in discussions, and submit pull requests to enhance its features and functionality.
-
-## Open-Source License
-
-OAuth is licensed under the MIT License, an open-source license that fosters collaboration and innovation. This license grants you the freedom to use, modify, and distribute OAuth for any purpose, empowering you to contribute to its growth and development.
+### Technical Security Details
+- **Encryption**: Passwords are never stored in plain text. We use the bcrypt algorithm, which includes a unique salt for every user to prevent rainbow table attacks.
+- **Token Integrity**: JWTs are signed with the HS256 algorithm. This ensure that a token cannot be modified by a user without invalidating the signature.
+- **Scalability**: The `src` layout used here is the standard for professional Python development, making the project ready to be built into a distributable wheel or containerized for cloud deployment.
