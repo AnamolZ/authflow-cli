@@ -35,12 +35,9 @@ MANIFEST
 .env
 .env.*
 ! .env.example
-data/Credentials.json
-data/*.csv
 
 # Project Specific
 logs/
-data/*.json
 
 # IDEs & Editors
 .vscode/

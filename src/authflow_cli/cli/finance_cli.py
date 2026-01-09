@@ -4,6 +4,10 @@ from ..auth.service import AuthService
 from ..services.stock_service import StockInfoFetcher
 
 async def main():
+    """
+    Main entry point for the Finance CLI tool.
+    Handles user token input and fetches stock information.
+    """
     max_attempts = 3
     symbols = ["AAPL", "AMZN", "GOOGL", "MSFT", "TSLA", "GOOG", "NVDA", "NFLX"]
 
@@ -14,8 +18,6 @@ async def main():
         if token.lower() == 'exit':
             break
 
-        # In a real CLI, we would probably call the API over HTTP
-        # But for this simulation, we'll use the service logic
         from ..auth.service import settings, jwt, JWTError
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])

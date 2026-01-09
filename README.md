@@ -8,7 +8,7 @@ This project serves as a comprehensive example of a production-ready Python appl
 
 The project has been reorganized from a collection of scripts into a formal Python package structure. This separation of concerns ensures that each part of the system can be developed, tested, and scaled independently.
 
-#### Core Package (src/oauth_finance)
+#### Core Package (src/authflow_cli)
 - **Configuration Layer**: Centrally managed via `core/config.py`. It utilizes Pydantic Settings to handle environment variables and system constants. This approach prevents hardcoding sensitive information and allows the application to adapt to different environments (development, staging, production) without code changes.
 - **Authentication Service**: Located in `auth/service.py`, this module implements the OAuth2 Password Flow using JSON Web Tokens (JWT). It handles user validation, secure password comparison using bcrypt hashing, and the issuance of signed tokens.
 - **Financial Services**: The `services/stock_service.py` module contains the business logic. It performs multi-threaded scraping of financial data. By using a thread pool, the system can fetch data for multiple stock symbols simultaneously, significantly reducing the total response time.
@@ -49,14 +49,14 @@ The project utilizes `uv` for environment management. This ensures that every de
 **The API Server**
 The server provides a RESTful interface and interactive documentation.
 ```bash
-uv run uvicorn oauth_finance.main:app --reload
+uv run uvicorn authflow_cli.main:app --reload
 ```
 Once running, you can visit `http://127.0.0.1:8000/docs` to see the full API specification.
 
 **The CLI Tool**
 This tool demonstrates how to consume the internal services directly.
 ```bash
-uv run python -m oauth_finance.cli.finance_cli
+uv run python -m authflow_cli.cli.finance_cli
 ```
 You will be prompted for an access token. You can generate one via Postman or the Swagger documentation mentioned above.
 

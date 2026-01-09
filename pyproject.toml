@@ -1,7 +1,7 @@
 [project]
-name = "oauth"
+name = "authflow-cli"
 version = "0.1.0"
-description = "Add your description here"
+description = "A professional OAuth2-based financial data CLI and API service."
 readme = "README.md"
 authors = [
     { name = "AnamolZ", email = "anmoldkl971@gmail.com" }
